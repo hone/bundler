@@ -53,6 +53,7 @@ module Bundler
       groups = [:default] if groups.empty?
 
       @definition.dependencies.each do |dep|
+        $stderr.puts :dep => dep
         # Skip the dependency if it is not in any of the requested
         # groups
         next unless ((dep.groups & groups).any? && dep.current_platform?)
@@ -73,6 +74,7 @@ module Bundler
               namespaced_file = dep.name.gsub('-', '/')
               Kernel.require namespaced_file
             rescue LoadError
+              $stderr.puts :emessage => e.message
               REGEXPS.find { |r| r =~ e.message }
               raise if dep.autorequire || $1.gsub('-', '/') != namespaced_file
             end
